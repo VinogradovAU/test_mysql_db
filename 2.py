@@ -45,6 +45,18 @@ CREATE TABLE IF NOT EXISTS manufacturers (
 
 '''
 
+# функция выполняет обращение к БД для получения данных. на входе массив с запросами
+def start_query(query):
+    for q in query:
+        cur.execute(q)
+        res = cur.fetchall()
+        for i in res:
+            print(i)
+
+# функция выполняет обращение к БД для выполнения команд без вывода результата
+def start_query_without_result(query):
+    for q in query:
+        cur.execute(q)
 
 path = '/home/ezh/mysql_lessons/parts/csv_parts.csv'   # тут список автозапчастей
 mass_parts=[]
@@ -114,26 +126,24 @@ cur = conn.cursor()
 if conn.is_connected():
     print('Connected to MySQL database')
 
-                                                        # ниже готовим таблицы для новых загрузок, т.к. ошибок много
-query = (f"DELETE FROM warehouse;")                     # и этот скрипт запускался не однократно
-cur.execute(query)
-query = (f"ALTER TABLE warehouse AUTO_INCREMENT=0;")
-cur.execute(query)
+query=[]                                                        # ниже готовим таблицы для новых загрузок, т.к. ошибок много
+query.append(f"DELETE FROM warehouse;")                     # и этот скрипт запускался не однократно
+query.append(f"ALTER TABLE warehouse AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM manufacturers;")
+query.append(f"ALTER TABLE manufacturers AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM catalog_parts;")
+query.append(f"ALTER TABLE catalog_parts AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM categories;")
+query.append(f"ALTER TABLE categories AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM order_type;")
+query.append(f"ALTER TABLE order_type AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM order_statuses;")
+query.append(f"ALTER TABLE order_statuses AUTO_INCREMENT=0;")
+query.append(f"DELETE FROM clients_status;")
+query.append(f"ALTER TABLE clients_status AUTO_INCREMENT=0;")
 
-query = (f"DELETE FROM manufacturers;")
-cur.execute(query)
-query = (f"ALTER TABLE manufacturers AUTO_INCREMENT=0;")
-cur.execute(query)
+start_query_without_result(query) # выполняем команды выше
 
-query = (f"DELETE FROM catalog_parts;")
-cur.execute(query)
-query = (f"ALTER TABLE catalog_parts AUTO_INCREMENT=0;")
-cur.execute(query)
-
-query = (f"DELETE FROM categories;")
-cur.execute(query)
-query = (f"ALTER TABLE categories AUTO_INCREMENT=0;")
-cur.execute(query)
 
 #заполняю таблицу поставщиков названиями фирм поставщиков/производителей
 
@@ -201,30 +211,37 @@ query = ("insert into categories (name, sub_cat_id) VALUES ('Категория 
 for result in cur.execute(query, multi=True):
     pass
 
-query = (f"SELECT * FROM warehouse LIMIT 10;")        # вывод для проверки таблицы - СКЛАД
-cur.execute(query)
-res = cur.fetchall()
-for i in res:
-    print(i)
+# заполняем таблицу order_type, order_statuses и clients_statuses
+query=[]
+query.append(f"insert into order_type (name) VALUES ('sale');")             # тип заказа - продажа
+query.append(f"insert into order_type (name) VALUES ('service');")          # тип заказа - услуга/обслуживание/ремонт
+query.append(f"insert into order_statuses (name) VALUES ('in work');")      # статус - в работе
+query.append(f"insert into order_statuses (name) VALUES ('completed');")    # статус - завершено
+query.append(f"insert into order_statuses (name) VALUES ('pending');")      # статус - отложен/в ожидании
+query.append(f"insert into clients_status (name) VALUES ('wooden');")      # статус клиента - деревянный
+query.append(f"insert into clients_status (name) VALUES ('silver');")      # статус клиента - серебро
+query.append(f"insert into clients_status (name) VALUES ('gold');")      # статус клиента - золото
+query.append(f"insert into clients_status (name) VALUES ('vip');")      # статус клиента - "очень важный"
 
-query = (f"SELECT * FROM manufacturers LIMIT 10;")        # вывод для проверки таблицы поставщиков
-cur.execute(query)
-res = cur.fetchall()
-for i in res:
-    print(i)
+start_query_without_result(query)
 
-query = (f"SELECT * FROM catalog_parts LIMIT 10;")        # вывод для проверки таблицы каталог запчастей
-cur.execute(query)
-res = cur.fetchall()
-for i in res:
-    print(i)
 
-query = (f"SELECT * FROM categories;")        # вывод для проверки таблицы категорий автозапчастей
-cur.execute(query)
-res = cur.fetchall()
-for i in res:
-    print(i)
+# функция вывода данных из таблиц для проверки
+def test_query():
 
+    query=[]
+    query.append(f"SELECT * FROM warehouse LIMIT 10;")        # вывод для проверки таблицы - СКЛАД
+    query.append(f"SELECT * FROM manufacturers LIMIT 10;")        # вывод для проверки таблицы поставщиков
+    query.append(f"SELECT * FROM catalog_parts LIMIT 10;")        # вывод для проверки таблицы каталог запчастей
+    query.append(f"SELECT * FROM categories;")        # вывод для проверки таблицы категорий автозапчастей
+    query.append(f"SELECT * FROM order_type;")  # вывод для проверки таблицы тип заказа
+    query.append(f"SELECT * FROM order_statuses;")  # вывод для проверки таблицы состояние заказа
+    query.append(f"SELECT * FROM clients_status;")  # вывод для проверки таблицы состояние заказа
+    start_query(query)
+
+
+
+test_query() # функция вывода данных из таблиц для проверки
 conn.commit()
 #commit нужен для сохранения изменений. без него мы увидем изменения,
                        # но после close() они исчезнут

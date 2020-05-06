@@ -10,7 +10,6 @@ CREATE DATABASE IF NOT EXISTS db_car_service;
 
 #Переходим в базу данных
 USE db_car_service;
-show tables;
 
 #Создаем таблицу - personals - данные о персонале компании
 DROP TABLE if exists personals;
