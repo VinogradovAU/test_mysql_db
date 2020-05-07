@@ -225,7 +225,6 @@ query.append(f"insert into clients_status (name) VALUES ('vip');")      # ста
 
 start_query_without_result(query)
 
-
 # функция вывода данных из таблиц для проверки
 def test_query():
 
