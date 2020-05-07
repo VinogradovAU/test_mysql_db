@@ -27,3 +27,27 @@ update manufacturers, manufacturers_2 SET
       where manufacturers.id = manufacturers_2.id;
       
 DROP table manufacturers_2;
+
+#заполняем поле cars_id в таблие clients - указывает строку в таблице cars_clients (а там авто клиента)
+update clients, cars_clients SET 
+	clients.cars_id=cars_clients.id 
+    WHERE clients.id=cars_clients.client_id;
+    
+
+#надо задать модель авто для каждого клиента в талице cars_clients. В зависимости от брэнда авто. генерим 
+# случайное число от 1 до N, где N- количество моделей для конкретного брэнда. 
+# выведем таблицу с сгенерированным случайным номером модели для каждой марки авто. 
+
+select cars_brand.name, count(*) AS count,
+(select floor(1+ RAND() * 
+(select count(*) from cars_model where car_brand_id= cars_brand.id)
+)) AS rand_model_number
+ 
+	from cars_model
+    JOIN cars_brand
+    ON cars_model.car_brand_id=cars_brand.id
+    group by cars_model.car_brand_id;
+    
+    
+
+

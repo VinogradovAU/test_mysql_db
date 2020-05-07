@@ -59,7 +59,6 @@ CREATE TABLE IF NOT EXISTS orders (
     personal_id INT unsigned COMMENT 'указатель на запись в таблице personals',
     warehouse_id INT unsigned COMMENT 'указатель на запись в таблице warehouse',
     quantity_parts INT unsigned COMMENT 'уоличество деталей',
-    sum_sum INT unsigned COMMENT 'стоимость апчастей',
     order_status_id INT UNSIGNED COMMENT 'статус заказа - выволнен/нет и т.д.',
     order_type_id INT UNSIGNED COMMENT 'тип услуги',
     work_list_id INT UNSIGNED COMMENT 'вид работ',
