@@ -263,10 +263,6 @@ ALTER TABLE cars_clients
 	ADD constraint cars_clients_clients_id_fk
 		FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE CASCADE;
         
-ALTER TABLE categories
-	ADD constraint categories_sub_cat_id_fk
-		foreign key (sub_cat_id) references categories (id) ON delete set null;
-        
 ALTER TABLE warehouse
 	ADD constraint warehouse_id_auto_parts_fk
 		foreign key (id_auto_parts) references catalog_parts (id) ON delete set null,

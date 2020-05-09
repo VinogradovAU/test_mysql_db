@@ -15,8 +15,7 @@ SELECT * FROM orders LIMIT 10;
 SELECT * FROM personals order by address_id LIMIT 101;
 SELECT * FROM warehouse LIMIT 10;
 SELECT * FROM work_list LIMIT 10;
-SELECT * FROM manufacturers;
-SELECT * FROM cars_clients;
+
 
 SELECT * FROM manufacturers_2;           #временная таблица сгенерировала на сайте http://filldb.info/
 update manufacturers, manufacturers_2 SET 
@@ -34,20 +33,26 @@ update clients, cars_clients SET
     WHERE clients.id=cars_clients.client_id;
     
 
-#надо задать модель авто для каждого клиента в талице cars_clients. В зависимости от брэнда авто. генерим 
+# необходимо задать модель авто для каждого клиента в талице cars_clients. В зависимости от брэнда авто. генерим 
 # случайное число от 1 до N, где N- количество моделей для конкретного брэнда. 
 # выведем таблицу с сгенерированным случайным номером модели для каждой марки авто. 
 
-select cars_brand.name, count(*) AS count,
+select cars_brand.name, cars_brand.id AS brand_id, count(*) AS count_models,
 (select floor(1+ RAND() * 
 (select count(*) from cars_model where car_brand_id= cars_brand.id)
 )) AS rand_model_number
- 
-	from cars_model
+ 	from cars_model
     JOIN cars_brand
     ON cars_model.car_brand_id=cars_brand.id
     group by cars_model.car_brand_id;
     
+#генератор номера телефона    
+select CONCAT('8-90', FLOOR(RAND()*10), 
+	'-',FLOOR(RAND()*10), FLOOR(RAND()*10), FLOOR(RAND()*10),
+    '-',FLOOR(RAND()*10), FLOOR(RAND()*10), FLOOR(RAND()*10),
+    '-',FLOOR(RAND()*10), FLOOR(RAND()*10)) AS phone;
     
-
-
+#корректировка VIN номер - UPPER()
+UPDATE cars_clients SET vin_num = UPPER(vin_num);
+UPDATE cars_clients SET gos_number = UPPER(gos_number);
+SELECT * FROM cars_clients;
