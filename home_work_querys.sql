@@ -56,3 +56,40 @@ select CONCAT('8-90', FLOOR(RAND()*10),
 UPDATE cars_clients SET vin_num = UPPER(vin_num);
 UPDATE cars_clients SET gos_number = UPPER(gos_number);
 SELECT * FROM cars_clients;
+
+#проверка тригера upper_vin_gos_nums_carts_clients
+insert into cars_clients 
+	(client_id, brand_id, model_id, gos_number, vin_num, year_car) 
+    VALUES
+    (1,3,2, 'a 177aa 777', 'lkjh3458dhfnjc7hhs', 2020);
+select * from cars_clients order by id DESC limit 10;
+
+# расчет поля sum_sum таблицы orders для одной стройки
+SELECT
+	(SELECT quantity_parts FROM db_car_service.orders WHERE id = 1) *
+		(SELECT price FROM db_car_service.warehouse WHERE id = 
+			(SELECT warehouse_id FROM db_car_service.orders WHERE id=1))       
+        + 
+			(SELECT price FROM db_car_service.work_list WHERE id = (SELECT work_list_id FROM db_car_service.orders WHERE id=1)) AS sum_sum;
+    
+#проверка тригера insert_data_in_orders
+insert into orders 
+	(description, client_id, personal_id, warehouse_id, quantity_parts, order_status_id, order_type_id, work_list_id)
+	VALUES
+    ('тестовая строчка insert для расчета поля sum_sum',
+    1,6,6457,2,2,2,108);
+SELECT * FROM orders order by id desc limit 5;
+
+#проверка тригера update_data_in_orders
+update orders SET client_id = 2 where id = 2;
+
+# апдейт всех строк в таблице для перерасчета sum_sum
+#update orders SET id = id; 
+
+select count(*) AS count_null FROM orders where sum_sum IS NULL;
+select count(*) AS count_not_null FROM orders where sum_sum IS NOT NULL;
+
+
+SELECT * FROM orders limit 5;
+
+

@@ -26,7 +26,7 @@ cur = conn.cursor()
 if conn.is_connected():
     print('Connected to MySQL database')
 
-# надо задать модель авто для каждого клиента в талице cars_clients. В зависимости от брэнда авто. генерим
+# надо задать модель авто для каждого клиента в таблице cars_clients. В зависимости от брэнда авто. генерим
 # случайное число от 1 до N, где N- количество моделей для конкретного брэнда.
 # выведем таблицу с сгенерированным случайным номером модели для каждой марки авто.
 query=[]
@@ -60,14 +60,14 @@ res2 = cur.fetchall()
 for k in res2:  # тут берем производителя авто каждого пользователя
     for t in res1:
         if (k[1]==t[0]):  # тут находим этого же производителя в массиве с количеством моделей и со случайным числом
-             cur.execute(f"UPDATE cars_clients SET model_id = {int(t[2])} WHERE id={k[0]};")  # тут пишем на чем ездит клиент слуйным числом
+             cur.execute(f"UPDATE cars_clients SET model_id = {int(t[2])} WHERE id={k[0]};")  # тут пишем на чем ездит клиент случайным числом
 
 query=[]
 query.append(f"select * from cars_clients limit 20;")
 start_query(query)
 
 #корректировка поля quantity_parts в таблице orders (слишком большие значения в некоторых строчках)
-#тк. это поле количества запчастей для установки сделаем количество от 1 до 4 деталей в заказе
+#тк. это поле количества запчастей для установки. сделаем количество от 1 до 4 деталей в заказе
 query=[]
 query.append(f"UPDATE orders SET quantity_parts= FLOOR(1+ (RAND()* 4));")
 start_query_without_result(query)

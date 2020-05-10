@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS orders (
     personal_id INT unsigned COMMENT 'указатель на запись в таблице personals',
     warehouse_id INT unsigned COMMENT 'указатель на запись в таблице warehouse',
     quantity_parts INT unsigned COMMENT 'уоличество деталей',
+    sum_sum int unsigned DEFAULT NULL COMMENT 'стоимость апчастей',
     order_status_id INT UNSIGNED COMMENT 'статус заказа - выволнен/нет и т.д.',
     order_type_id INT UNSIGNED COMMENT 'тип услуги',
     work_list_id INT UNSIGNED COMMENT 'вид работ',
@@ -97,7 +98,7 @@ CREATE TABLE IF NOT EXISTS work_list (
 	id INT UNSIGNED NOT NULL auto_increment PRIMARY KEY,
     name TEXT COMMENT 'описание работ',
     price INT UNSIGNED COMMENT 'цена единичной работы',
-    cat_parts_id INT UNSIGNED COMMENT 'деталь из каталога к которой относится работа',
+    cat_parts_id INT UNSIGNED COMMENT 'деталь из каталога к которой относится работа. может и не быть',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  
 ) ENGINE=InnoDB;
