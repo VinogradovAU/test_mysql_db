@@ -43,10 +43,9 @@ BEGIN
 END//
 DELIMITER ;
 
-# процедура проверки таблицы orders на наличие строчек с полем sum_sum в состоянии NULL
 
+# процедура вывода информации о пользователе
 DROP PROCEDURE IF EXISTS user_info;
-
 DELIMITER //
 CREATE PROCEDURE user_info(IN l_name VARCHAR(100), IN f_name VARCHAR(100))
 BEGIN
@@ -61,22 +60,23 @@ BEGIN
             SET @name_status = (SELECT name from clients_status where id = @id);
             SET @car_brand_id = (SELECT brand_id FROM cars_clients where id=@cars_id);
             SET @car_model_id = (SELECT model_id FROM cars_clients where id=@cars_id);
-            SET @lim = (@car_model_id - 1);
             SET @car_brand = (SELECT name from cars_brand where id = @car_brand_id); 
-			
-            #тут ошибка!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            SET @car_model = (SELECT name from cars_model where car_brand_id = @car_brand_id LIMIT @lim, 1);
-            
+			SET @a:=0;
+            SET @car_name = (
+				SELECT nnn.name FROM 
+					(SELECT @a:=@a+1 AS i_id, name 
+							from cars_model where car_brand_id = @car_brand_id) AS nnn 
+					WHERE nnn.i_id=@car_model_id);
+		    SET @car = (SELECT name FROM cars_brand WHERE id = @car_brand_id);
             
             SET @status_name = (SELECT name FROM clients_status where id=@status_id);
-			SELECT @name AS full_name, @status_name AS status, @car_name AS car, @cars_id , @car_brand_id, @car_model_id;
+			SELECT @name AS full_name, @status_name AS status, CONCAT(@car, " ", @car_name) AS car;
 	END IF;
 	END //
 DELIMITER ;
 
 call user_info('Lang','Ima');
-call user_info('Ima');
-call user_info('');
+
 
 
 

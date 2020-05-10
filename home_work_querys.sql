@@ -92,4 +92,10 @@ select count(*) AS count_not_null FROM orders where sum_sum IS NOT NULL;
 
 SELECT * FROM orders limit 5;
 
-
+SET @a:=0;
+SELECT nnn.name FROM 
+		(SELECT @a:=@a+1 AS i_id, name 
+							from cars_model where car_brand_id = 3) AS nnn 
+					WHERE nnn.i_id=10;
+                    
+SELECT @a:=@a+1 AS i_id, name from cars_model where car_brand_id = 3;
