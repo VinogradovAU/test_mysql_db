@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS clients (
     email VARCHAR(200) COMMENT 'адрес электронной почты',
     phone VARCHAR(20) COMMENT 'номер телефона',
     client_status_id INT UNSIGNED COMMENT 'указатель на запись в таблице statuses',
-    cars_id INT UNSIGNED COMMENT 'указатель на запись в таблице cars_clients',
     address_id INT UNSIGNED COMMENT 'указатель на запись в таблице addresses',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -234,10 +233,8 @@ ALTER table clients
 	ADD constraint clients_address_id_fk
      FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL,
 	ADD constraint clients_client_status_id_fk
-     FOREIGN KEY (client_status_id) REFERENCES clients_status (id) ON DELETE SET NULL,
-	ADD constraint clients_cars_id_fk
-     FOREIGN KEY (cars_id) REFERENCES cars_clients (id) ON DELETE SET NULL;
-     
+     FOREIGN KEY (client_status_id) REFERENCES clients_status (id) ON DELETE SET NULL;
+
 ALTER table orders
 	ADD constraint orders_client_id_fk
      FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE SET NULL,
