@@ -225,5 +225,88 @@ where
     
 select * from cars_clients limit 10;
     
+# вывод информации о запчастях
+
+select 
+	c.id AS id,
+	c.name AS code,                                   # код/артикул запчасти
+	c.descr_parts AS description,                     # описание 
+    w.quantity_now AS quant_on_warehouse,             # количество на складе
+    w.price AS price,                                 # цена 
+    m.name AS vendor,								  # поставщик
+    CONCAT(m.phone, ", ",m.email,", ", m.contact_person) AS Contact       #контактные данные поставщика
+	
+    from warehouse AS w
+    RIGHT JOIN catalog_parts AS c
+    ON c.id=w.id_auto_parts
+    LEFT JOIN manufacturers AS m
+    ON w.vendor_id=m.id
+	order by c.id
+    limit 0,10000;
+    
+# запчасти отсутствующие на складе    
+select 
+	c.id AS id,
+	c.name AS code,                                   # код/артикул запчасти
+	c.descr_parts AS description,                     # описание 
+    w.quantity_now AS quant_on_warehouse,             # количество на складе
+    w.price AS price,                                 # цена 
+    m.name AS vendor,								  # поставщик
+    CONCAT(m.phone, ", ",m.email,", ", m.contact_person) AS Contact       #контактные данные поставщика
+	
+    from warehouse AS w
+    RIGHT JOIN catalog_parts AS c
+    ON c.id=w.id_auto_parts
+    LEFT JOIN manufacturers AS m
+    ON w.vendor_id=m.id
+	where w.quantity_now IS NULL
+    order by c.id DESC
+    limit 0,10000;
+
+select count(*) from warehouse;
+select count(*) from catalog_parts;
+select * from catalog_parts order by id DESC;
+select * from warehouse limit 10;
+
+#добавляем данные , чтобы в каталоге запчастей было больше данных (строк) чем на складе
+
+insert into catalog_parts (name, descr_parts, cat_id) VALUES
+        ('CB1173GP025', 'Вклад.шатун.ком/кт 0.25', 9);
+insert into catalog_parts (name, descr_parts, cat_id) VALUES
+        ('CB1408A050', 'CB-1408A 0.50 Вкладыши шатун. TOYOTA 1C,2C', 13);
+insert into catalog_parts (name, descr_parts, cat_id) VALUES
+        ('CB1131A025', 'CB-1131A 0.25 Вкладыши шатун. MITS G51,G52B,4D55', 12);
+        
+        
+  
+# вывод информации о запчастях
+select
+	cc.id,      # id по таблице категорий
+    cc.name,        # основная категория 
+	XXX.SUB_CAT,        # подкатегория
+    XXX.code AS code,     # код/артикул запчасти
+    XXX.description AS description   # описание
+from
+(
+select 
+	c.id AS id,
+	c.name AS code,                                   # код/артикул запчасти
+	c.descr_parts AS description,                     # описание 
+    cat.name AS SUB_CAT,								  # категория в каталоге запчастей
+    cat.sub_cat_id AS sub_id 
+    
+    from warehouse AS w
+    RIGHT JOIN catalog_parts AS c
+    ON c.id=w.id_auto_parts
+    JOIN categories AS cat
+    ON c.cat_id=cat.id
+	order by c.id
+    limit 0,10000
+ ) AS XXX
+ JOIN categories AS cc
+ ON XXX.sub_id=cc.id
+ limit 0,100;
+ 
+select * from categories;
     
     
